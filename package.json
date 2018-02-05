@@ -1,21 +1,21 @@
 {
-  "name": "phaser3-plugin-template",
-  "version": "1.0.0",
-  "description": "Phaser 3 Plugin Template",
+  "name": "phaser3-animated-tiles",
+  "version": "0.0.1",
+  "description": "Phaser 3 Animated Tiles Plugin",
   "main": "src/main.js",
   "scripts": {
     "build": "webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/photonstorm/phaser3-plugin-template.git"
+    "url": "git+https://github.com/nkholski/phaser3-animated-tiles.git"
   },
-  "author": "Richard Davey",
+  "author": "Niklas Berg",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/photonstorm/phaser3-plugin-template/issues"
+    "url": "https://github.com/nkholski/phaser3-animated-tiles/issues"
   },
-  "homepage": "https://github.com/photonstorm/phaser3-plugin-template#readme",
+  "homepage": "https://github.com/nkholski/phaser3-animated-tiles#readme",
   "devDependencies": {
     "webpack": "^3.10.0",
     "babel-core": "^6.25.0",

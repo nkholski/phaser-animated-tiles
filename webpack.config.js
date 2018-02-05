@@ -10,13 +10,13 @@ module.exports = {
 
     entry: {
         app: [
-            'babel-preset-es2015',
-            path.resolve(__dirname, 'src/main.js')
+           // 'babel-preset-es2015',
+            path.resolve(__dirname, 'src/main.js'),
           ],
     },
 
     output: {
-        path: `${__dirname}/../smb3/assets/`,
+        path: `${__dirname}/dist/`,
         filename: 'AnimatedTiles.js',
         library: 'AnimatedTiles',
         libraryTarget: 'umd',
@@ -32,7 +32,7 @@ module.exports = {
             uglifyOptions: {
                 compress: true,
                 ie8: false,
-                ecma: 7,
+                ecma: 5,
                 output: {
                     comments: false
                 },

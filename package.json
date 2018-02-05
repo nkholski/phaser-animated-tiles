@@ -1,0 +1,27 @@
+{
+  "name": "phaser3-plugin-template",
+  "version": "1.0.0",
+  "description": "Phaser 3 Plugin Template",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/photonstorm/phaser3-plugin-template.git"
+  },
+  "author": "Richard Davey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/photonstorm/phaser3-plugin-template/issues"
+  },
+  "homepage": "https://github.com/photonstorm/phaser3-plugin-template#readme",
+  "devDependencies": {
+    "webpack": "^3.10.0",
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}

@@ -72,10 +72,9 @@ AnimatedTiles.prototype = {
     init: function (map) {
         this.map = map;
         // TODO: Allow to specify tileset?
-        this.map.tilesets.forEach((tileset)=>
-         {        
+        this.map.tilesets.forEach((tileset) => {
             this.animatedTiles = this.getAnimatedTiles(tileset.tileData);
-         }
+        }
         )
         this.start(); // Start the animations by default
     },
@@ -103,6 +102,28 @@ AnimatedTiles.prototype = {
         if (!this.active) {
             return;
         }
+
+        // Checking Mario culled tiles 100 000 times take 100ms
+
+        console.log("NEW");
+        let date1 = new Date();
+        //console.log(new Date().getSeconds()+" "+new Date().getMilliseconds());
+        let apa = { hej: 1, svej: 1 }
+        //for(i=0;i<100000;i++){
+        this.map.layers[0].tilemapLayer.culledTiles.forEach(tile => {
+            if (tile.index === apa.hej && tile.index == apa.svej) {
+
+            }
+        });
+        //}
+        let date2 = new Date();
+        console.log(date2.getTime() - date1.getTime());
+        //        console.log(new Date().getSeconds()+" "+new Date().getMilliseconds());
+
+
+        //      debugger;
+
+
         this.animatedTiles.forEach(
             (animatedTile) => {
                 //let animatedTile = this.animatedTiles[tilkey];
@@ -153,10 +174,48 @@ AnimatedTiles.prototype = {
 
         this.scene = undefined;
     },
-
-
-
     getAnimatedTiles: function (tileData) {
+        // Buildning the array with tiles that should be animated
+        let animatedTiles = [];
+        Object.keys(tileData).forEach(
+            (index) => {
+                console.log(gid);
+                index=parseInt(index);
+                if (tileData[index].hasOwnProperty("animation")) {
+                    let tile = {
+                        index,
+                        frames: [],
+                        currentFrame: 0
+                    };
+                    tileData[index].animation.forEach((frame) => { frame.tileid++; tile.frames.push(frame) });
+                    tile.next = tile.frames[0].duration;
+                    animatedTiles.push(tile);
+                    this.tileRate[index] = 1;
+                }
+            }
+        );
+        // Add animIndex to all tiles which is the original index set by Tiled
+        // animIndex is constant while the rendered index is in flux 
+        animatedTiles.forEach(
+            (animatedTile) => {
+                this.map.layers[0].data.forEach(
+                    (tileCol) => {
+                        tileCol.forEach(
+                            (tile) => {
+                                if (tile.index === animatedTile.index) {
+                                    tile.animIndex = animatedTile.index;
+                                }
+                            }
+                        );
+                    }
+                )
+            }
+        );
+        return animatedTiles;
+    },
+
+
+    getAnimatedTilesOLD: function (tileData) {
         // Buildning the array with tiles that should be animated
         let animatedTiles = [];
         Object.keys(tileData).forEach(
@@ -191,3 +250,54 @@ AnimatedTiles.prototype.constructor = AnimatedTiles;
 //  Make sure you export the plugin for webpack to expose
 
 module.exports = AnimatedTiles;
+
+
+/***
+let width = 20;        debugger;
+
+let height = 15;
+let rect1 = {
+  x: 5,
+  y: 2,
+};
+let rect2 = {
+  x: 0,
+  y: 0,
+};
+if(rect2.x>rect1.x){
+  // Update tiles in rectangle to the right
+  for(let x=rect1.x+width; x<rect2.x+width; x++){
+    for(let y=rect2.y; y<rect2.y+height; y++){
+      console.log(x,y);
+    }
+  }
+}
+else if(rect2.x<rect1.x){
+  // Update tiles in rectangle to the left
+  for(let x=rect2.x; x<rect1.x; x++){
+    for(let y=rect2.y; y<rect2.y+height; y++){
+      console.log(x,y);
+    }
+  }
+}
+// This updates tiles below or above previously updated screen,
+// except whats already been taken care off by left/right check
+/*if(rect2.y>rect1.y){
+  // Update tiles in rectangle below
+  for(let x=rect2.x; x<rect1.x+width; x++){
+    for(let y=rect1.y+height; y<rect2.y+height; y++){
+      console.log("below",x,y);
+    }
+  }
+}
+else if(rect2.y<rect1.y){
+  // Update tiles in rectangle above
+  for(let x=rect2.x; x<rect1.x+width; x++){
+    for(let y=rect2.y; y<rect1.y; y++){
+      console.log("above",x,y);
+    }
+  }
+}*/
+
+
+

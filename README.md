@@ -9,11 +9,23 @@ The plugin is based on Photonstorms plugin template (https://github.com/photonst
 Run `npm install` and then `npm run build` to build the plugin.
 
 ## Current state
-The plugin is being developed and the source code isn't optimized nor clean. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot.
+The plugin is being developed and there are loads of possible bugs and missing features. It can only handle one tilemap and tileset (but multiple layers) and I don't know what happens if a static layer is thrown at it. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
 
-## Using the plugin
+## Example
+The example is served online here: http://metroid.niklasberg.se/phaser-animated-tiles/
 
-### Load the plugin and add it to a scene
+Or you can run it locally:
+
+Install http-server
+```
+npm i http-server
+```
+Start http-server in the repository root and go to localhost:8080/example in your browser. Port number might be different. You might want to install http-server globally using "-g". Sorry for this. I lack the skills to serve the example by config for npm.
+
+
+## How to use the plugin
+
+### 1. Load the plugin and add it to a scene
 
 You can load plugins externally, or include them in your bundle.
 
@@ -46,9 +58,9 @@ var config = {
 };
 ```
 
-### Use the plugin
+### 2. Use the plugin API
 
-To initilize the plugin you just need to pass the tilemap you want to animate to the plugin. The plugin requires a dynamic tilemap to work.
+To initilize the plugin you just need to pass the tilemap you want to animate to the plugin. The plugin requires a dynamic layers to work.
 
 ```
 function create ()

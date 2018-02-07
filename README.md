@@ -1,8 +1,10 @@
-# Phaser3 Animated Tiles Plugin
+# Phaser 3 Animated Tiles Plugin
 
 A simple plugin with a simple purpose: to add support for animated tiles to Phaser 3 as exported from Tiled. 
 
-A showcase: https://github.com/nkholski/phaser3-es6-webpack
+The bundled example is available live here: http://metroid.niklasberg.se/phaser-animated-tiles/
+
+The plugin is also used in this platformer example: https://github.com/nkholski/phaser3-es6-webpack
 
 The plugin is based on Photonstorms plugin template (https://github.com/photonstorm/phaser3-plugin-template). 
 
@@ -12,10 +14,6 @@ Run `npm install` and then `npm run build` to build the plugin.
 The plugin is being developed and there are loads of possible bugs and missing features. It can only handle one tilemap and tileset (but multiple layers) and I don't know what happens if a static layer is thrown at it. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
 
 ## Example
-The example is served online here: http://metroid.niklasberg.se/phaser-animated-tiles/
-
-Or you can run it locally:
-
 Install http-server
 ```
 npm i http-server

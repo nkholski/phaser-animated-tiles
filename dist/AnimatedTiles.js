@@ -77,12 +77,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+"use strict";
 
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
 
 /**
 * @author       Niklas Berg <nkholski@niklasberg.se>
@@ -90,7 +86,13 @@ module.exports = __webpack_require__(1);
 * @license      {@link https://github.com/nkholski/phaser3-animated-tiles/blob/master/LICENSE|MIT License}
 */
 
-var AnimatedTiles = function (scene) {
+//
+// This plugin is based on Photonstorms Phaser 3 plugin template.
+// The template is ES5 compliant while the added code uses ES6 features,
+// but the plan is to turn it all into a ES6 Class. 
+
+var AnimatedTiles = function AnimatedTiles(scene) {
+
     //  The Scene that owns this plugin
     this.scene = scene;
 
@@ -102,29 +104,35 @@ var AnimatedTiles = function (scene) {
     this.map = null;
 
     // Array with all tiles to animate
+    // TODO: Turn on and off certain tiles.
     this.animatedTiles = [];
 
     // Global playback rate
     this.rate = 1;
-    // Playback rate per tile as multiple of the global rate.
-    this.tileRate = {};
 
     // Should the animations play or not?
     this.active = false;
 
+    // Should the animations play or not per layer. If global active is false this value makes no difference
+    this.activeLayer = [];
+
     if (!scene.sys.settings.isBooted) {
         scene.sys.events.once('boot', this.boot, this);
     }
+
+    // TODO: Loads of YAGNI-stuff
+    // 1. Toggle animations for a layer
+    // 2. Toggle animations for a tile
+    // 3. Reset everything to first frame or something
+    // 4. Put tile => as native API but push itself to the update list of animation data of that tile, 
+    // or removes it if a non-animated tile overwrites another. Just needed if new gid is part of current animation.
+    // 5. Define animations programmatically
+    // 6. If 5 is done: Allow animated rotation (probably 45 degree steps only), flipping and alpha. Tint?
 };
 
 //  Static function called by the PluginFile Loader.
 AnimatedTiles.register = function (PluginManager) {
     //  Register this plugin with the PluginManager, so it can be added to Scenes.
-
-    //  The first argument is the name this plugin will be known as in the PluginManager. It should not conflict with already registered plugins.
-    //  The second argument is a reference to the plugin object, which will be instantiated by the PluginManager when the Scene boots.
-    //  The third argument is the local mapping. This will make the plugin available under `this.sys.base` and also `this.base` from a Scene if
-    //  it has an entry in the InjectionMap.
     PluginManager.register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
 };
 
@@ -132,219 +140,231 @@ AnimatedTiles.prototype = {
 
     //  Called when the Plugin is booted by the PluginManager.
     //  If you need to reference other systems in the Scene (like the Loader or DisplayList) then set-up those references now, not in the constructor.
-    boot: function () {
+    boot: function boot() {
         var eventEmitter = this.systems.events;
-
-        //  Listening to the following events is entirely optional, although we would recommend cleanly shutting down and destroying at least.
-        //  If you don't need any of these events then remove the listeners and the relevant methods too.
-
-        //eventEmitter.on('start', this.start, this);
-
-        //eventEmitter.on('preupdate', this.preUpdate, this);
-        //eventEmitter.on('update', this.update, this);
         eventEmitter.on('postupdate', this.postUpdate, this);
-
-        //eventEmitter.on('pause', this.pause, this);
-        //eventEmitter.on('resume', this.resume, this);
-
-        //eventEmitter.on('sleep', this.sleep, this);
-        //eventEmitter.on('wake', this.wake, this);
-
         eventEmitter.on('shutdown', this.shutdown, this);
         eventEmitter.on('destroy', this.destroy, this);
     },
 
     // Initilize support for animated tiles on given map
-    init: function (map) {
+    init: function init(map) {
+        var _this = this;
+
         this.map = map;
-        // TODO: Allow to specify tileset?
-        this.map.tilesets.forEach((tileset) => {
-            this.animatedTiles = this.getAnimatedTiles(tileset.tileData);
-        }
-        )
-        this.start(); // Start the animations by default
+        // This is just stupid. Loop through and overwrite with last found tileset. Fixing it later.
+        this.map.tilesets.forEach(function (tileset) {
+            _this.animatedTiles = _this.getAnimatedTiles(tileset.tileData);
+        });
+        this.active = true; // Start the animations by default
     },
 
-    setRate(rate, tile = null) {
-        if (!index) {
+    setRate: function setRate(rate) {
+        var gid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+        if (!gid) {
             this.rate = rate;
         }
+        this.animatedTiles.forEach(function (animatedTile) {
+            if (animatedTile.index === gid) {
+                animatedTile.rate = rate;
+            }
+        });
         // if tile is number (gid) --> set rate for that tile
-        // if tile is object -> check properties matching object and set rate
+        // TODO: if passing an object -> check properties matching object and set rate
+    },
+
+
+    resetRates: function resetRates() {
+        this.rate = 1;
+        this.animatedTiles.forEach(function (animatedTile) {
+            animatedTile.rate = 1;
+        });
     },
 
     //  Start (or resume) animations
-    start: function () {
-        this.active = true;
+    resume: function resume() {
+        var _this2 = this;
+
+        var layerIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+        console.log("RESUME", layerIndex);
+        if (layerIndex === null) {
+            this.active = true;
+        } else {
+            this.activeLayer[layerIndex] = true;
+            this.animatedTiles.forEach(function (animatedTile) {
+                _this2.updateLayer(animatedTile, animatedTile.tiles[layerIndex]);
+            });
+        }
     },
 
     // Stop (or pause) animations
-    stop: function () {
-        this.active = false;
-    },
+    pause: function pause() {
+        var layerIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-    //  Called every Scene step - phase 3
-    postUpdate: function (time, delta) {
+        if (layerIndex === null) {
+            this.active = false;
+        } else {
+            this.activeLayer[layerIndex] = false;
+        }
+    },
+    postUpdate: function postUpdate(time, delta) {
+        var _this3 = this;
+
         if (!this.active) {
             return;
         }
-
-        // Checking Mario culled tiles 100 000 times take 100ms
-
-        console.log("NEW");
-        let date1 = new Date();
-        //console.log(new Date().getSeconds()+" "+new Date().getMilliseconds());
-        let apa = { hej: 1, svej: 1 }
-        //for(i=0;i<100000;i++){
-        this.map.layers[0].tilemapLayer.culledTiles.forEach(tile => {
-            if (tile.index === apa.hej && tile.index == apa.svej) {
-
+        this.animatedTiles.forEach(function (animatedTile) {
+            // Reduce time for curent tile
+            animatedTile.next -= delta * _this3.rate * animatedTile.rate;
+            // Time for current tile is up!!!
+            if (animatedTile.next < 0) {
+                // Remember current frame index
+                var currentIndex = animatedTile.currentFrame;
+                // Remember the tileId of current tile
+                var oldTileId = animatedTile.frames[currentIndex].tileid;
+                // Advance to next in line
+                var newIndex = currentIndex + 1;
+                // If we went beyond last frame, we just start over
+                if (newIndex > animatedTile.frames.length - 1) {
+                    newIndex = 0;
+                }
+                // Set lifelength for current frame
+                animatedTile.next = animatedTile.frames[newIndex].duration;
+                // Set index of current frame
+                animatedTile.currentFrame = newIndex;
+                // Store the tileId (gid) we will shift to
+                // Loop through all tiles (via layers)
+                //this.updateLayer
+                animatedTile.tiles.forEach(function (layer, layerIndex) {
+                    if (!_this3.activeLayer[layerIndex]) {
+                        return;
+                    }
+                    _this3.updateLayer(animatedTile, layer, oldTileId);
+                    /*if (!this.activeLayer[layerIndex]) {
+                        console.log("NOT ACTIVE", layerIndex);
+                        return;
+                    }
+                    let tilesToRemove = [];
+                    layer.forEach(
+                        (tile) => {
+                            // If the tile is removed or has another index than expected, it's
+                            // no longer animated. Mark for removal.
+                            if (!this._ignoreInconsistantTiles[layerIndex] && (tile === null || tile.index !== oldTileId)) {
+                                tilesToRemove.push(tile);
+                            }
+                            else {
+                                // Finally we set the index of the tile to the one specified by current frame!!!
+                                tile.index = tileId;
+                            }
+                        }
+                    );
+                    // Remove obselete tiles
+                    tilesToRemove.forEach(
+                        (tile) => {
+                            debugger;
+                            let pos = layer.indexOf(tile);
+                            if (pos > -1) {
+                                layer.splice(pos, 1);
+                            }
+                            else {
+                                console.error("This shouldn't happen. Not at all. Blame Phaser Animated Tiles plugin. You'll be fine though.");
+                            }
+                         }
+                    );*/
+                });
             }
         });
-        //}
-        let date2 = new Date();
-        console.log(date2.getTime() - date1.getTime());
-        //        console.log(new Date().getSeconds()+" "+new Date().getMilliseconds());
+    },
 
+    updateLayer: function updateLayer(animatedTile, layer) {
+        var oldTileId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
 
-        //      debugger;
-
-
-        this.animatedTiles.forEach(
-            (animatedTile) => {
-                //let animatedTile = this.animatedTiles[tilkey];
-                animatedTile.next -= delta * this.rate;
-                if (animatedTile.next < 0) {
-                    let currentIndex = animatedTile.currentFrame;
-                    let newIndex = currentIndex + 1;
-                    if (newIndex > (animatedTile.frames.length - 1)) {
-                        newIndex = 0;
-                    }
-                    animatedTile.next = animatedTile.frames[newIndex].duration;
-                    animatedTile.currentFrame = newIndex;
-                    /**
-                     * 
-                     * TODO: 1. Gå på AnimationIndex, 
-                     * 2. ändra bara inom vyn: MEN då måste räkna ut nya tiles som inte syntes nyss. Kom ihåg förra området!
-                     * 
-                     */
-                    this.map.replaceByIndex(animatedTile.frames[currentIndex].tileid, animatedTile.frames[newIndex].tileid);
-                }
-                else {
-                    // TODO: Uppdatera sådana som inte synts i förra uppdateringen
-
-                }
+        var tilesToRemove = [];
+        var tileId = animatedTile.frames[animatedTile.currentFrame].tileid;
+        layer.forEach(function (tile) {
+            // If the tile is removed or has another index than expected, it's
+            // no longer animated. Mark for removal.
+            if (oldTileId > -1 && (tile === null || tile.index !== oldTileId)) {
+                tilesToRemove.push(tile);
+            } else {
+                // Finally we set the index of the tile to the one specified by current frame!!!
+                tile.index = tileId;
             }
-        );
+        });
+        // Remove obselete tiles
+        tilesToRemove.forEach(function (tile) {
+            debugger;
+            var pos = layer.indexOf(tile);
+            if (pos > -1) {
+                layer.splice(pos, 1);
+            } else {
+                console.error("This shouldn't happen. Not at all. Blame Phaser Animated Tiles plugin. You'll be fine though.");
+            }
+        });
     },
 
-    resetRate: function (globalOnly = false) {
-        this.rate = 1;
-        if (!globalOnly) {
-            Object.keys(this.tileRates).forEach(
-                (key) => {
-                    this.tileRates[key] = 1;
-                }
-            )
-        }
-    },
 
     //  Called when a Scene shuts down, it may then come back again later (which will invoke the 'start' event) but should be considered dormant.
-    shutdown: function () {
-    },
-
+    shutdown: function shutdown() {},
 
     //  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.
-    destroy: function () {
+    destroy: function destroy() {
         this.shutdown();
-
         this.scene = undefined;
     },
-    getAnimatedTiles: function (tileData) {
-        // Buildning the array with tiles that should be animated
-        let animatedTiles = [];
-        Object.keys(tileData).forEach(
-            (gid) => {
-                console.log(gid);
-                gid=parseInt(gid);
-                if (tileData[gid].hasOwnProperty("animation")) {
-                    let tile = {
-                        gid,
-                        frames: [],
-                        currentFrame: 0
-                    };
-                    tileData[gid].animation.forEach((frame) => { frame.tileid++; tile.frames.push(frame) });
-                    tile.next = tile.frames[0].duration;
-                    animatedTiles.push(tile);
-                    this.tileRate[gid] = 1;
-                }
-            }
-        );
-        console.log("aåa", this, this.map.layers[0]);
-        console.log(animatedTiles);
-        let breakMe = false;
-        animatedTiles.forEach(
-            (animatedTile) => {
-                this.map.layers[0].data.forEach(
-                    (tileCol) => {
-                        tileCol.forEach(
-                            (tile) => {
-                                if (tile.index === animatedTile.gid) {
-                                    tile.animIndex = animatedTile.gid;
-                                    breakMe = true;
-                                }
 
+    getAnimatedTiles: function getAnimatedTiles(tileData) {
+        var _this4 = this;
 
+        // this.animatedTiles is an array of objects with information on how to animate and which tiles.
+        var animatedTiles = [];
+        // Go through the data stored on each tile (not tile on the tilemap but tile in the tileset)
+        Object.keys(tileData).forEach(function (index) {
+            index = parseInt(index);
+            // If tile has animation info we'll dive into it
+            if (tileData[index].hasOwnProperty("animation")) {
+                var animatedTileData = {
+                    index: index, // gid of the original tile
+                    frames: [], // array of frames
+                    currentFrame: 0, // start on first frame
+                    tiles: [], // array with one array per layer with list of tiles that depends on this animation data
+                    rate: 1 // multiplier, set to 2 for double speed or 0.25 quarter speed
+                };
+                // push all frames to the animatedTileData
+                tileData[index].animation.forEach(function (frame) {
+                    frame.tileid++;animatedTileData.frames.push(frame);
+                });
+                // time until jumping to next frame
+                animatedTileData.next = animatedTileData.frames[0].duration;
+                // Go through all layers for tiles
+                _this4.map.layers.forEach(function (layer) {
+                    // tiles array for current layer
+                    var tiles = [];
+                    // loop through all rows with tiles...
+                    layer.data.forEach(function (tileRow) {
+                        // ...and loop through all tiles in that row
+                        tileRow.forEach(function (tile) {
+                            // Tiled start index for tiles with 1 but animation with 0. Thus that wierd "-1"
+                            if (tile.index - 1 === index) {
+                                tiles.push(tile);
                             }
-
-
-                        );
-                        if(breakMe){
-                            console.log(tileCol);
-                            debugger;
-                        }
-
-                    }
-
-
-
-                )
-
-
+                        });
+                    });
+                    // add the layer's array with tiles to the tiles array.
+                    // this will make it possible to control layers individually in the future
+                    animatedTileData.tiles.push(tiles);
+                });
+                // animatedTileData is finished for current animation, push it to the animatedTiles-property of the plugin
+                animatedTiles.push(animatedTileData);
             }
+        });
+        this.map.layers.forEach(function (layer, layerIndex) {
+            // layer indices array of booleans whether to animate tiles on layer or not  
+            _this4.activeLayer[layerIndex] = true;
+        });
 
-
-        );
-        debugger;
-        return animatedTiles;
-    },
-
-
-    getAnimatedTilesOLD: function (tileData) {
-        // Buildning the array with tiles that should be animated
-        let animatedTiles = [];
-        Object.keys(tileData).forEach(
-            (key) => {
-                console.log(key);
-                if (tileData[key].hasOwnProperty("animation")) {
-                    let tile = {
-                        key,
-                        frames: [],
-                        currentFrame: 0
-                    };
-                    tileData[key].animation.forEach((frame) => { frame.tileid++; tile.frames.push(frame) });
-                    tile.next = tile.frames[0].duration;
-                    animatedTiles.push(tile);
-                    this.tileRate[key] = 1;
-                    /**
-                     * 
-                     *  TODO: Add animationIndex to all
-                     * 
-                     */
-
-                }
-            }
-        )
         return animatedTiles;
     }
 
@@ -352,60 +372,7 @@ AnimatedTiles.prototype = {
 
 AnimatedTiles.prototype.constructor = AnimatedTiles;
 
-//  Make sure you export the plugin for webpack to expose
-
 module.exports = AnimatedTiles;
-
-
-/***
-let width = 20;
-let height = 15;
-let rect1 = {
-  x: 5,
-  y: 2,
-};
-let rect2 = {
-  x: 0,
-  y: 0,
-};
-if(rect2.x>rect1.x){
-  // Update tiles in rectangle to the right
-  for(let x=rect1.x+width; x<rect2.x+width; x++){
-    for(let y=rect2.y; y<rect2.y+height; y++){
-      console.log(x,y);
-    }
-  }
-}
-else if(rect2.x<rect1.x){
-  // Update tiles in rectangle to the left
-  for(let x=rect2.x; x<rect1.x; x++){
-    for(let y=rect2.y; y<rect2.y+height; y++){
-      console.log(x,y);
-    }
-  }
-}
-// This updates tiles below or above previously updated screen,
-// except whats already been taken care off by left/right check
-/*if(rect2.y>rect1.y){
-  // Update tiles in rectangle below
-  for(let x=rect2.x; x<rect1.x+width; x++){
-    for(let y=rect1.y+height; y<rect2.y+height; y++){
-      console.log("below",x,y);
-    }
-  }
-}
-else if(rect2.y<rect1.y){
-  // Update tiles in rectangle above
-  for(let x=rect2.x; x<rect1.x+width; x++){
-    for(let y=rect2.y; y<rect1.y; y++){
-      console.log("above",x,y);
-    }
-  }
-}*/
-
-
-
-
 
 /***/ })
 /******/ ]);

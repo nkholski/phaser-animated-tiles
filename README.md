@@ -61,7 +61,7 @@ This is actually all you need to do but you may control the plugin calling metho
 
 | Method        | Args          | Usage  |
 | ------------- |---------------| -----|
-| resetRate     | globalOnly?: bool | Sets playback rate to 1. If globalOnly is set to true individual tile rates is perserved. |
+| resetRates     |  | Sets playback rate to 1 globally and for each individual tile |
 | setRate       | rate: int, gid?: int      |  Sets playback multiplier to 'rate'. A rate of 2 will play the animation twice as fast as configured in Tiled, and 0.5 half as fast. If a gid is specified the rate is exclusively set for that tile. If the global rate is set to 0.5 and the rate of a tile is set to 2 it will play as configured in Tiled (0.5*2 = 1).|
-| start         |       | Start or resume tile animations. Called by init. |
-| stop          |       | Stop (or pause) tile animations. |
+| resume         | layerIndex?:int      | Resume tile animations globally if no layerIndex is set (may be overridden by layers), otherwise for that layer only. |
+| pause          | layerIndex?:int      | Resume tile animations globally if no layerIndex is set and overrides layer settingsm, otherwise for that layer only. |

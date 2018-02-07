@@ -9,21 +9,26 @@ module.exports = {
     context: `${__dirname}/src/`,
 
     entry: {
-        app: [
-           // 'babel-preset-es2015',
+        AnimatedTiles: './main.js',
+        'AnimatedTiles.min': './main.js'
+        /*app: [
+            // 'babel-preset-es2015',
             path.resolve(__dirname, 'src/main.js'),
-          ],
+            
+        ],*/
     },
 
     output: {
         path: `${__dirname}/dist/`,
-        filename: 'AnimatedTiles.js',
+        filename: '[name].js',
         library: 'AnimatedTiles',
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
 
     plugins: [
+        
+
 
         new UglifyJSPlugin({
             include: /\.min\.js$/,
@@ -41,6 +46,31 @@ module.exports = {
             warningsFilter: (src) => false
         })
 
-    ]
+    ],
+    module: {
+        rules: [
+          {
+            test: /\.js$/, // Check for all js files
+            exclude: /node_modules/,
+            use: [{
+              loader: 'babel-loader',
+              options: { presets: ['es2015'] }
+            }]
+          }
+        ]
+      },
+/*    rules: [
+        {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-env']
+                }
+            }
+        }
+    ]*/
+
 
 };

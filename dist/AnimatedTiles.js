@@ -338,6 +338,13 @@ AnimatedTiles.prototype = {
                     animatedTileData.next = animatedTileData.frames[0].duration;
                     // Go through all layers for tiles
                     _this3.map.layers.forEach(function (layer) {
+                        if (layer.tilemapLayer.type === "StaticTilemapLayer") {
+                            // We just push an empty array if the layer is static (impossible to animate). 
+                            // If we just skip the layer, the layer order will be messed up
+                            // when updating animated tiles and things will look awful.
+                            animatedTileData.tiles.push([]);
+                            return;
+                        }
                         // tiles array for current layer
                         var tiles = [];
                         // loop through all rows with tiles...

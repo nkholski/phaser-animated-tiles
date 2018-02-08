@@ -115,7 +115,7 @@ var AnimatedTiles = function AnimatedTiles(scene) {
     // Should the animations play or not per layer. If global active is false this value makes no difference
     this.activeLayer = [];
 
-    // Obey timescale? 0 for no, 1 for yes.
+    // Obey timescale?
     this.followTimeScale = true;
 
     if (!scene.sys.settings.isBooted) {

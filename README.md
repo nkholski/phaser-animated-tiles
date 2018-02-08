@@ -1,17 +1,26 @@
 # Phaser 3 Animated Tiles Plugin
 
-A simple plugin with a simple purpose: to add support for animated tiles to Phaser 3 as exported from Tiled. 
+A simple plugin with a simple purpose: to add support for animated tiles to Phaser 3 as exported from Tiled.
 
 The bundled example is available live here: http://metroid.niklasberg.se/phaser-animated-tiles/
 
 The plugin is also used in this platformer example: https://github.com/nkholski/phaser3-es6-webpack
 
-The plugin is based on Photonstorms plugin template (https://github.com/photonstorm/phaser3-plugin-template). 
+The plugin is based on Photonstorms plugin template: https://github.com/photonstorm/phaser3-plugin-template
 
 Run `npm install` and then `npm run build` to build the plugin.
 
 ## Current state
 The plugin is being developed and there are loads of possible bugs and missing features. It can only handle one tilemap and tileset (but multiple layers) and I don't know what happens if a static layer is thrown at it. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
+
+### Future
+I have a few stuff I would like to add, of which some might be [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it):
+1. PutTile as the native API but will push the tile to the update list for that tile gid. If you put a tile over an animated tile, that tile should instead be removed from the list. The latter is just needed if the new gid is a part of the current anim, but still nice to have.
+2. Define animations programmatically.
+3. And if 2 is done: Allow animated rotation (probably 45 degree steps only), flipping and alpha. Tint? Stuff that Phaser supports.
+4. Method to reset everything to their first frame.
+5. Multiple maps. I don't even know if and how it's supported by Phaser though.
+6. Another thing I'm unsure of is Phaser's capability to change the pace of time (slow down / speed up). I should check it out and make sure that the plugin can adapt to that too.
 
 ## Example
 Install http-server

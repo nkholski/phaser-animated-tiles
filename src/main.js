@@ -33,6 +33,9 @@ var AnimatedTiles = function (scene) {
     // Should the animations play or not per layer. If global active is false this value makes no difference
     this.activeLayer = [];
 
+    // Obey timescale? 0 for no, 1 for yes.
+    this.followTimeScale = true;
+
     if (!scene.sys.settings.isBooted) {
         scene.sys.events.once('boot', this.boot, this);
     }
@@ -120,10 +123,12 @@ AnimatedTiles.prototype = {
         if (!this.active) {
             return;
         }
+        // Elapsed time is the delta multiplied by the global rate and the scene timeScale if folowTimeScale is true
+        let elapsedTime = delta * this.rate * (this.followTimeScale ? this.scene.time.timeScale : 1);
         this.animatedTiles.forEach(
             (animatedTile) => {
-                // Reduce time for curent tile
-                animatedTile.next -= delta * this.rate * animatedTile.rate;
+                // Reduce time for current tile, multiply elapsedTime with this tile's private rate
+                animatedTile.next -= elapsedTime * animatedTile.rate;
                 // Time for current tile is up!!!
                 if (animatedTile.next < 0) {
                     // Remember current frame index

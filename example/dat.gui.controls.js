@@ -1,7 +1,6 @@
 
 function startGui(plugin) {
     var settings = {
-        message: "hej",
         active: true,
         rate: 1,
         waterRate: 1,
@@ -11,16 +10,49 @@ function startGui(plugin) {
             settings.rate = 1;
             settings.waterRate = 1;
             settings.lavaRate = 1;
-            gui.__folders["Global"].__controllers[1].updateDisplay();
-            gui.__folders["Global"].__controllers[2].updateDisplay();
-            gui.__folders["Global"].__controllers[3].updateDisplay();
+            settings.leftMap.rate = 1;
+            settings.leftMap.waterRate = 1;
+            settings.leftMap.lavaRate = 1;
+            settings.rightMap.rate = 1;
+            settings.rightMap.waterRate = 1;
+            fixGuiValues();
         },
-        active0: true,
-        active1: true,
-        alpha0: 1,
-        alpha1: 11
+        leftMap: {
+            active: true,
+            active0: true,
+            active1: true,
+            rate: 1,
+            waterRate: 1,
+            lavaRate: 1,
+            resetRates: function () {
+                plugin.resetRates(0);
+                settings.leftMap.rate = 1;
+                settings.leftMap.waterRate = 1;
+                settings.leftMap.lavaRate = 1;
+                fixGuiValues();
+            },
+        },
+        rightMap: {
+            active: true,
+            waterRate: 1,
+        }
     };
+
+    var fixGuiValues = function(){
+        gui.__folders["Global"].__controllers[1].updateDisplay();
+        gui.__folders["Global"].__controllers[2].updateDisplay();
+        gui.__folders["Global"].__controllers[3].updateDisplay();
+        gui.__folders["Left map"].__controllers[3].updateDisplay();
+        gui.__folders["Left map"].__controllers[4].updateDisplay();
+        gui.__folders["Left map"].__controllers[5].updateDisplay();
+        gui.__folders["Right map"].__controllers[1].updateDisplay();
+
+    }
+
+
     var gui = new dat.GUI();
+    
+    /// GLOBAL
     var folder = gui.addFolder('Global');
     f = folder.add(settings, 'active');
     f.onChange(function (value) {
@@ -44,9 +76,53 @@ function startGui(plugin) {
         plugin.setRate(value, 1412);
     });
     folder.add(settings, 'resetRates');
+
     folder.open();
-    var folder = gui.addFolder('Bottom layer');
-    f = folder.add(settings, 'active0').name('active');
+
+    /// LEFT MAP
+    var leftMap = gui.addFolder('Left map');
+    f = leftMap.add(settings.leftMap, 'active');
+    f.onChange(function (value) {
+        if (value) {
+            plugin.resume(null,0);
+        }
+        else {
+            plugin.pause(null,0);
+        }
+    });
+    f = leftMap.add(settings.leftMap, 'active0').name('Bottom layer');
+    f.onChange(function (value) {
+        if (value) {
+            plugin.resume(0,0);
+        }
+        else {
+            plugin.pause(0,0);
+        }
+    });
+    f = leftMap.add(settings.leftMap, 'active1').name('Top layer');
+    f.onChange(function (value) {
+        if (value) {
+            plugin.resume(1,0);
+        }
+        else {
+            plugin.pause(1,0);
+        }
+    });
+    f = leftMap.add(settings.leftMap, 'rate', 0, 5);
+    f.onChange(function (value) {
+        plugin.setRate(value, null, 0);
+    });
+    f = leftMap.add(settings.leftMap, 'waterRate', 0, 5);
+    f.onChange(function (value) {
+        plugin.setRate(value, 1384, 0);
+    });
+    f = leftMap.add(settings.leftMap, 'lavaRate', 0, 5);
+    f.onChange(function (value) {
+        plugin.setRate(value, 1412, 0);
+    });
+    leftMap.add(settings.leftMap, 'resetRates');
+    /*leftMap.add(settings.leftMap, 'resetRates');
+    f = leftMap.add(settings.leftMap, 'active0').name('Bottom layer');
     f.onChange(function (value) {
         if (value) {
             plugin.resume(0);
@@ -55,10 +131,7 @@ function startGui(plugin) {
             plugin.pause(0);
         }
     });
-    //f = folder.add(settings, 'alpha0').name('alpha');
-    folder.open();
-    var folder = gui.addFolder('Top layer');
-    f = folder.add(settings, 'active1').name('active');
+    f = leftMap.add(settings.leftMap, 'active1').name('Top layer');
     f.onChange(function (value) {
         if (value) {
             plugin.resume(1);
@@ -66,6 +139,25 @@ function startGui(plugin) {
         else {
             plugin.pause(1);
         }
+    });*/
+    leftMap.open();
+
+    var rightMap = gui.addFolder('Right map');
+    f = rightMap.add(settings.rightMap, 'active');
+    f.onChange(function (value) {
+        if (value) {
+            plugin.resume(null,1);
+        }
+        else {
+            plugin.pause(null,1);
+        }
     });
-    folder.open();
+    
+    f = rightMap.add(settings.rightMap, 'waterRate', 0, 5);
+    f.onChange(function (value) {
+        plugin.setRate(value, 1384, 1);
+    });
+    rightMap.open();
+
+
 }

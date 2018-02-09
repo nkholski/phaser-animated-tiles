@@ -18,12 +18,19 @@
     </style>
 </head>
 
-<body>    
+<body>
     <script src="../node_modules/phaser/dist/phaser.js"></script>
     <script src="../node_modules/dat.gui/build/dat.gui.js"></script>
     <script src="./dat.gui.controls.js"></script>
     <script src="./game.js"></script>
-    
+    <div style="max-width: 50%">
+        Please note that dat.gui isn't perfectly configured. The global rate settings might be the most confusing part. By changing
+        it you pass down rates to all maps and tilesettings, but the gui won't update if you change rates on a specified
+        map and the visible number will be irrelevant until changed next time.<br>
+        Github: <a href="https://github.com/nkholski/phaser-animated-tiles">https://github.com/nkholski/phaser-animated-tiles</a>
+    </div>
 </body>
+
+
 
 </html>

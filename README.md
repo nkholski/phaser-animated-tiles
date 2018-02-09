@@ -10,6 +10,9 @@ The plugin is based on Photonstorms plugin template: https://github.com/photonst
 
 Run `npm install` and then `npm run build` to build the plugin.
 
+## Features
+This plugin supports unlimited maps, layers and tilesets simultaneously. There are methods to control animations globally, within specified tilemaps or layers. Those methods can control such things as playback-rate both for all tiles and for specified tiles. ATM it's up to you to keep track on indicies for maps you add and their layers. For most cases that shouldn't be a problem. If you just want to support animated tiles exactly as specified in Tiled you need three lines; one to preload the plugin, one to register it in your create method and one to initilize it for your map.
+
 ## Current state
 The plugin is being developed and there are loads of possible bugs and missing features. It can only handle one tilemap and tileset (but multiple layers) and I don't know what happens if a static layer is thrown at it. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
 
@@ -19,8 +22,6 @@ I have a few stuff I would like to add, of which some might be [YAGNI](https://e
 2. Define animations programmatically.
 3. And if 2 is done: Allow animated rotation (probably 45 degree steps only), flipping and alpha. Tint? Stuff that Phaser supports.
 4. Method to reset everything to their first frame.
-5. Multiple maps. I don't even know if and how it's supported by Phaser though.
-6. Another thing I'm unsure of is Phaser's capability to change the pace of time (slow down / speed up). I should check it out and make sure that the plugin can adapt to that too.
 
 ## Example
 Install http-server

@@ -13,15 +13,13 @@ Run `npm install` and then `npm run build` to build the plugin.
 ## Features
 This plugin supports unlimited maps, layers and tilesets simultaneously. There are methods to control animations globally, within specified tilemaps or layers. Those methods can control such things as playback-rate both for all tiles and for specified tiles. ATM it's up to you to keep track on indicies for maps you add and their layers. For most cases that shouldn't be a problem. If you just want to support animated tiles exactly as specified in Tiled you need three lines; one to preload the plugin, one to register it in your create method and one to initilize it for your map.
 
-## Current state
-The plugin is being developed and there are loads of possible bugs and missing features. It can only handle one tilemap and tileset (but multiple layers) and I don't know what happens if a static layer is thrown at it. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
-
 ### Future
 I have a few stuff I would like to add, of which some might be [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it):
 1. PutTile as the native API but will push the tile to the update list for that tile gid. If you put a tile over an animated tile, that tile should instead be removed from the list. The latter is just needed if the new gid is a part of the current anim, but still nice to have.
 2. Define animations programmatically.
 3. And if 2 is done: Allow animated rotation (probably 45 degree steps only), flipping and alpha. Tint? Stuff that Phaser supports.
 4. Method to reset everything to their first frame.
+5. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
 
 ## Example
 Install http-server
@@ -77,11 +75,14 @@ function create ()
 }
 ```
 
-This is actually all you need to do but you may control the plugin calling methods with "this.sys.animatedTiles.methodName()". Current list of methods:
+This is actually all you need to do but you may control the plugin calling methods with "this.sys.animatedTiles.methodName()". (The inconsistency between passing a tilemap and a mapindex will be solved by excepting both in all concerned methods. Methods to find tilemaps, layers and tiles will be added.)
+
+Current list of methods:
 
 | Method        | Args          | Usage  |
 | ------------- |---------------| -----|
-| resetRates     |  | Sets playback rate to 1 globally and for each individual tile |
-| setRate       | rate: int, gid?: int      |  Sets playback multiplier to 'rate'. A rate of 2 will play the animation twice as fast as configured in Tiled, and 0.5 half as fast. If a gid is specified the rate is exclusively set for that tile. If the global rate is set to 0.5 and the rate of a tile is set to 2 it will play as configured in Tiled (0.5*2 = 1).|
-| resume         | layerIndex?:int      | Resume tile animations globally if no layerIndex is set (may be overridden by layers), otherwise for that layer only. |
-| pause          | layerIndex?:int      | Resume tile animations globally if no layerIndex is set and overrides layer settingsm, otherwise for that layer only. |
+| resetRates     | mapIndex?: int | Sets playback rate to 1 globally and for each individual tile, pass mapIndex to limit the method to that map |
+| setRate       | rate: int, gid?: int, map?: Phaser.Tilemap      |  Sets playback multiplier to 'rate'. A rate of 2 will play the animation twice as fast as configured in Tiled, and 0.5 half as fast. If a gid is specified the rate is exclusively set for that tile. If the global rate is set to 0.5 and the rate of a tile is set to 2 it will play as configured in Tiled (0.5*2 = 1). Pass tilemap to limit the method to that map.|
+| resume         | layerIndex?:int, mapIndex?:int     | Resume tile animations globally if no layerIndex is set (may be overridden by layers), otherwise for that layer only. Pass mapIndex to limit the method to that map. |
+| pause          | layerIndex?:int, mapIndex?:int     | Resume tile animations globally if no layerIndex is set and overrides layer settingsm, otherwise for that layer only. Pass mapIndex to limit the method to that map.|
+| updateAnimatedTiles | TODO | Tell the plugin when you have added new animated tiles to layers after initilization. Needed to detect new animations. |

@@ -223,9 +223,9 @@ AnimatedTiles.prototype = {
         var _this = this;
 
         var layerIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-        var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var mapIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-        var scope = map === null ? this : this.animatedTiles[map];
+        var scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
         if (layerIndex === null) {
             scope.active = true;
         } else {
@@ -239,9 +239,9 @@ AnimatedTiles.prototype = {
     // Stop (or pause) animations
     pause: function pause() {
         var layerIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-        var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var mapIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-        var scope = map === null ? this : this.animatedTiles[map];
+        var scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
         if (layerIndex === null) {
             scope.active = false;
         } else {

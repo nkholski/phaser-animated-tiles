@@ -1,5 +1,5 @@
 {
-  "name": "phaser3-animated-tiles",
+  "name": "phaser-animated-tiles",
   "version": "1.0.0",
   "description": "Phaser 3 Animated Tiles Plugin",
   "main": "src/main.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nkholski/phaser3-animated-tiles.git"
+    "url": "git+https://github.com/nkholski/phaser-animated-tiles.git"
   },
   "author": "Niklas Berg",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nkholski/phaser3-animated-tiles/issues"
+    "url": "https://github.com/nkholski/phaser-animated-tiles/issues"
   },
-  "homepage": "https://github.com/nkholski/phaser3-animated-tiles#readme",
+  "homepage": "https://github.com/nkholski/phaser-animated-tiles#readme",
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",

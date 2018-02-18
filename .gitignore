@@ -6,6 +6,7 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 indexLive.html
+*.bak*
 
 # Vendors
 node_modules/

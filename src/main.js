@@ -84,6 +84,14 @@ AnimatedTiles.prototype = {
         if (this.animatedTiles.length === 1) {
             this.active = true; // Start the animations by default
         }
+        /* Needed?
+        this.animatedTiles[this.animatedTiles.length-1].animatedTiles.forEach(
+            (animatedTile) => {
+                animatedTile.tiles.forEach((layer) => {
+                    this.updateLayer(animatedTile,  layer);
+                });
+            }
+        )*/
     },
 
     setRate(rate, gid = null, map = null) {
@@ -278,14 +286,21 @@ AnimatedTiles.prototype = {
                         // If tile has animation info we'll dive into it
                         if (tileData[index].hasOwnProperty("animation")) {
                             let animatedTileData = {
-                                index: index+tileset.firstgid, // gid of the original tile
+                                index: index + tileset.firstgid, // gid of the original tile
                                 frames: [], // array of frames
                                 currentFrame: 0, // start on first frame
                                 tiles: [], // array with one array per layer with list of tiles that depends on this animation data
                                 rate: 1, // multiplier, set to 2 for double speed or 0.25 quarter speed
                             };
                             // push all frames to the animatedTileData
-                            tileData[index].animation.forEach((frame) => { frame.tileid += tileset.firstgid; animatedTileData.frames.push(frame) });
+                            tileData[index].animation.forEach(
+                                (frameData) => {
+                                    let frame = {
+                                        duration: frameData.duration,
+                                        tileid: frameData.tileid + tileset.firstgid
+                                    };
+                                    animatedTileData.frames.push(frame)
+                                });
                             // time until jumping to next frame
                             animatedTileData.next = animatedTileData.frames[0].duration;
                             // Go through all layers for tiles
@@ -343,9 +358,9 @@ AnimatedTiles.prototype = {
 
     updateAnimatedTiles() {
         // future args: x=null, y=null, w=null, h=null, container=null 
-        let x=null, y=null, w=null, h=null, container=null;
+        let x = null, y = null, w = null, h = null, container = null;
         // 1. If no container, loop through all initilized maps
-        if(container === null){
+        if (container === null) {
             container = [];
             this.animatedTiles.forEach(
                 (mapAnimData) => {
@@ -367,19 +382,18 @@ AnimatedTiles.prototype = {
                 mapAnimData.animatedTiles.forEach(
                     (tileAnimData) => {
                         tileAnimData.tiles.forEach(
-                            (tiles, layerIndex) => 
-                            {
+                            (tiles, layerIndex) => {
                                 let layer = mapAnimData.map.layers[layerIndex];
-                                if(layer.type === "StaticTilemapLayer") {
+                                if (layer.type === "StaticTilemapLayer") {
                                     return;
                                 }
-                                for(let x=chkX; x<(chkX+chkW); x++){
-                                    for(let y=chkY; y<(chkY+chkH); y++){
+                                for (let x = chkX; x < (chkX + chkW); x++) {
+                                    for (let y = chkY; y < (chkY + chkH); y++) {
                                         let tile = mapAnimData.map.layers[layerIndex].data[x][y];
                                         // should this tile be animated?
-                                        if(tile.index == tileAnimData.index){
+                                        if (tile.index == tileAnimData.index) {
                                             // is it already known? if not, add it to the list
-                                            if(tiles.indexOf(tile)===-1){
+                                            if (tiles.indexOf(tile) === -1) {
                                                 tiles.push(tile);
                                             }
                                             // update index to match current fram of this animation

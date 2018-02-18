@@ -166,6 +166,14 @@ AnimatedTiles.prototype = {
         if (this.animatedTiles.length === 1) {
             this.active = true; // Start the animations by default
         }
+        /* Needed?
+        this.animatedTiles[this.animatedTiles.length-1].animatedTiles.forEach(
+            (animatedTile) => {
+                animatedTile.tiles.forEach((layer) => {
+                    this.updateLayer(animatedTile,  layer);
+                });
+            }
+        )*/
     },
 
     setRate: function setRate(rate) {
@@ -354,8 +362,12 @@ AnimatedTiles.prototype = {
                         rate: 1 // multiplier, set to 2 for double speed or 0.25 quarter speed
                     };
                     // push all frames to the animatedTileData
-                    tileData[index].animation.forEach(function (frame) {
-                        frame.tileid += tileset.firstgid;animatedTileData.frames.push(frame);
+                    tileData[index].animation.forEach(function (frameData) {
+                        var frame = {
+                            duration: frameData.duration,
+                            tileid: frameData.tileid + tileset.firstgid
+                        };
+                        animatedTileData.frames.push(frame);
                     });
                     // time until jumping to next frame
                     animatedTileData.next = animatedTileData.frames[0].duration;

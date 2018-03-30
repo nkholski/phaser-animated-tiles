@@ -8,6 +8,8 @@ The plugin is also used in this platformer example: https://github.com/nkholski/
 
 The plugin is based on Photonstorms plugin template: https://github.com/photonstorm/phaser3-plugin-template
 
+Latest build can be found in the dist folder or NPM: https://www.npmjs.com/package/phaser-animated-tiles
+
 Run `npm install` and then `npm run build` to build the plugin.
 
 ## Features

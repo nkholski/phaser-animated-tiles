@@ -1,15 +1,14 @@
 /**
-* @author       Niklas Berg <nkholski@niklasberg.se>
-* @copyright    2018 Niklas Berg
-* @license      {@link https://github.com/nkholski/phaser3-animated-tiles/blob/master/LICENSE|MIT License}
-*/
+ * @author       Niklas Berg <nkholski@niklasberg.se>
+ * @copyright    2018 Niklas Berg
+ * @license      {@link https://github.com/nkholski/phaser3-animated-tiles/blob/master/LICENSE|MIT License}
+ */
 
 //
-// This plugin is based on Photonstorms Phaser 3 plugin template.
-// The template is ES5 compliant while the added code uses ES6 features,
-// but the plan is to turn it all into a ES6 Class. 
+// This plugin is based on Photonstorms Phaser 3 plugin template with added support for ES6.
+// 
 
-var AnimatedTiles = function (scene) {
+class AnimatedTiles {
     /*
 
     TODO: 
@@ -17,67 +16,58 @@ var AnimatedTiles = function (scene) {
     2. Helper functions: Get mapIndex by passing a map (and maybe support it as argument to methods), Get layerIndex, get tile index from properties.
     
     */
+    constructor(scene) {
+        //  The Scene that owns this plugin
+        this.scene = scene;
 
-    //  The Scene that owns this plugin
-    this.scene = scene;
+        this.systems = scene.sys;
 
-    this.systems = scene.sys;
+        // TileMap the plugin belong to. 
+        // TODO: Array or object for multiple tilemaps support
+        // TODO: reference to layers too, and which is activated or not
+        this.map = null;
 
-    // TileMap the plugin belong to. 
-    // TODO: Array or object for multiple tilemaps support
-    // TODO: reference to layers too, and which is activated or not
-    this.map = null;
+        // Array with all tiles to animate
+        // TODO: Turn on and off certain tiles.
+        this.animatedTiles = [];
 
-    // Array with all tiles to animate
-    // TODO: Turn on and off certain tiles.
-    this.animatedTiles = [];
+        // Global playback rate
+        this.rate = 1;
 
-    // Global playback rate
-    this.rate = 1;
+        // Should the animations play or not?
+        this.active = false;
 
-    // Should the animations play or not?
-    this.active = false;
+        // Should the animations play or not per layer. If global active is false this value makes no difference
+        this.activeLayer = [];
 
-    // Should the animations play or not per layer. If global active is false this value makes no difference
-    this.activeLayer = [];
+        // Obey timescale?
+        this.followTimeScale = true;
 
-    // Obey timescale?
-    this.followTimeScale = true;
-
-    if (!scene.sys.settings.isBooted) {
-        scene.sys.events.once('boot', this.boot, this);
+        if (!scene.sys.settings.isBooted) {
+            scene.sys.events.once('boot', this.boot, this);
+        }
     }
-};
-
-//  Static function called by the PluginFile Loader.
-AnimatedTiles.register = function (PluginManager) {
-    //  Register this plugin with the PluginManager, so it can be added to Scenes.
-    PluginManager.register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
-};
-
-AnimatedTiles.prototype = {
 
     //  Called when the Plugin is booted by the PluginManager.
     //  If you need to reference other systems in the Scene (like the Loader or DisplayList) then set-up those references now, not in the constructor.
-    boot: function () {
+    boot() {
         var eventEmitter = this.systems.events;
         eventEmitter.on('postupdate', this.postUpdate, this);
         eventEmitter.on('shutdown', this.shutdown, this);
         eventEmitter.on('destroy', this.destroy, this);
-    },
+    }
 
     // Initilize support for animated tiles on given map
-    init: function (map) {
+    init(map) {
         // TODO: Check if map is initilized already, if so do it again but overwrite the old.
         let mapAnimData = this.getAnimatedTiles(map);
-        let animatedTiles =
-            {
-                map,
-                animatedTiles: mapAnimData,
-                active: true,
-                rate: 1,
-                activeLayer: []
-            }
+        let animatedTiles = {
+            map,
+            animatedTiles: mapAnimData,
+            active: true,
+            rate: 1,
+            activeLayer: []
+        }
         let i = 0;
         map.layers.forEach(() => animatedTiles.activeLayer.push(true));
         this.animatedTiles.push(animatedTiles);
@@ -92,18 +82,16 @@ AnimatedTiles.prototype = {
                 });
             }
         )*/
-    },
+    }
 
     setRate(rate, gid = null, map = null) {
         if (gid === null) {
             if (map === null) {
                 this.rate = rate;
-            }
-            else {
+            } else {
                 this.animatedTiles[map].rate = rate;
             }
-        }
-        else {
+        } else {
             let loopThrough = (animatedTiles) => {
                 animatedTiles.forEach(
                     (animatedTile) => {
@@ -119,16 +107,15 @@ AnimatedTiles.prototype = {
                         loopThrough(animatedTiles.animatedTiles);
                     }
                 )
-            }
-            else {
+            } else {
                 loopThrough(this.animatedTiles[map].animatedTiles);
             }
         }
         // if tile is number (gid) --> set rate for that tile
         // TODO: if passing an object -> check properties matching object and set rate
-    },
+    }
 
-    resetRates: function (mapIndex = null) {
+    resetRates(mapIndex = null) {
         if (mapIndex === null) {
             this.rate = 1;
             this.animatedTiles.forEach(
@@ -141,8 +128,7 @@ AnimatedTiles.prototype = {
                     )
                 }
             );
-        }
-        else {
+        } else {
             this.animatedTiles[mapIndex].rate = 1;
             this.animatedTiles[mapIndex].animatedTiles.forEach(
                 (tileAnimData) => {
@@ -150,15 +136,14 @@ AnimatedTiles.prototype = {
                 }
             );
         }
-    },
+    }
 
     //  Start (or resume) animations
-    resume: function (layerIndex = null, mapIndex = null) {
+    resume(layerIndex = null, mapIndex = null) {
         let scope = (mapIndex === null) ? this : this.animatedTiles[mapIndex];
         if (layerIndex === null) {
             scope.active = true;
-        }
-        else {
+        } else {
             scope.activeLayer[layerIndex] = true;
             scope.animatedTiles.forEach(
                 (animatedTile) => {
@@ -166,20 +151,19 @@ AnimatedTiles.prototype = {
                 }
             )
         }
-    },
+    }
 
     // Stop (or pause) animations
-    pause: function (layerIndex = null, mapIndex = null) {
+    pause(layerIndex = null, mapIndex = null) {
         let scope = (mapIndex === null) ? this : this.animatedTiles[mapIndex];
         if (layerIndex === null) {
             scope.active = false;
-        }
-        else {
+        } else {
             scope.activeLayer[layerIndex] = false;
         }
-    },
+    }
 
-    postUpdate: function (time, delta) {
+    postUpdate(time, delta) {
         if (!this.active) {
             return;
         }
@@ -224,10 +208,10 @@ AnimatedTiles.prototype = {
                             });
                         }
                     }
-                );// animData loop
+                ); // animData loop
             }
         ); // Map loop
-    },
+    }
 
     updateLayer(animatedTile, layer, oldTileId = -1) {
         let tilesToRemove = [];
@@ -238,8 +222,7 @@ AnimatedTiles.prototype = {
                 // no longer animated. Mark for removal.
                 if (oldTileId > -1 && (tile === null || tile.index !== oldTileId)) {
                     tilesToRemove.push(tile);
-                }
-                else {
+                } else {
                     // Finally we set the index of the tile to the one specified by current frame!!!
                     tile.index = tileId;
                 }
@@ -251,27 +234,25 @@ AnimatedTiles.prototype = {
                 let pos = layer.indexOf(tile);
                 if (pos > -1) {
                     layer.splice(pos, 1);
-                }
-                else {
+                } else {
                     console.error("This shouldn't happen. Not at all. Blame Phaser Animated Tiles plugin. You'll be fine though.");
                 }
 
             }
         );
-    },
+    }
 
     //  Called when a Scene shuts down, it may then come back again later (which will invoke the 'start' event) but should be considered dormant.
-    shutdown: function () {
-    },
+    shutdown() {}
 
 
     //  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.
-    destroy: function () {
+    destroy() {
         this.shutdown();
         this.scene = undefined;
-    },
+    }
 
-    getAnimatedTiles: function (map) {
+    getAnimatedTiles(map) {
 
         // this.animatedTiles is an array of objects with information on how to animate and which tiles.
         let animatedTiles = [];
@@ -349,16 +330,20 @@ AnimatedTiles.prototype = {
         );
 
         return animatedTiles;
-    },
+    }
 
     putTileAt(layer, tile, x, y) {
         // Replaces putTileAt of the native API, but updates the list of animatedTiles in the process.
         // No need to call updateAnimatedTiles as required for other modificatons of the tile-map
-    },
+    }
 
     updateAnimatedTiles() {
         // future args: x=null, y=null, w=null, h=null, container=null 
-        let x = null, y = null, w = null, h = null, container = null;
+        let x = null,
+            y = null,
+            w = null,
+            h = null,
+            container = null;
         // 1. If no container, loop through all initilized maps
         if (container === null) {
             container = [];
@@ -409,10 +394,12 @@ AnimatedTiles.prototype = {
         );
         // 3. If container is a layer, just loop through it's tiles
     }
-
-
 };
 
-AnimatedTiles.prototype.constructor = AnimatedTiles;
+//  Static function called by the PluginFile Loader.
+AnimatedTiles.register = function (PluginManager) {
+    //  Register this plugin with the PluginManager, so it can be added to Scenes.
+    PluginManager.register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
+}
 
 module.exports = AnimatedTiles;

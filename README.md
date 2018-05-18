@@ -1,6 +1,6 @@
 # Phaser 3 Animated Tiles Plugin
 
-A simple plugin with a simple purpose: to add support for animated tiles to Phaser 3 as exported from Tiled.
+A simple plugin with a simple purpose: to add support for animated tiles to Phaser 3 (3.8.0+) as exported from Tiled.
 
 The bundled example is available live here: http://metroid.niklasberg.se/phaser-animated-tiles/
 

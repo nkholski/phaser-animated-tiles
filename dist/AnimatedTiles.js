@@ -110,19 +110,11 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
     function AnimatedTiles(scene, pluginManager) {
         _classCallCheck(this, AnimatedTiles);
 
-        //  The Scene that owns this plugin
-
-        var _this = _possibleConstructorReturn(this, (AnimatedTiles.__proto__ || Object.getPrototypeOf(AnimatedTiles)).call(this, scene, pluginManager));
-
-        console.log("this", _this);
-        debugger;
-        //this.scene = scene;
-
-        // this.systems = scene.sys;
-
         // TileMap the plugin belong to. 
         // TODO: Array or object for multiple tilemaps support
         // TODO: reference to layers too, and which is activated or not
+        var _this = _possibleConstructorReturn(this, (AnimatedTiles.__proto__ || Object.getPrototypeOf(AnimatedTiles)).call(this, scene, pluginManager));
+
         _this.map = null;
 
         // Array with all tiles to animate
@@ -144,7 +136,6 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
         if (!scene.sys.settings.isBooted) {
             scene.sys.events.once('boot', _this.boot, _this);
         }
-        console.log("!!!");
         return _this;
     }
 
@@ -153,7 +144,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
 
 
     _createClass(AnimatedTiles, [{
-        key: "boot",
+        key: 'boot',
         value: function boot() {
             var eventEmitter = this.systems.events;
             eventEmitter.on('postupdate', this.postUpdate, this);
@@ -164,7 +155,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
         // Initilize support for animated tiles on given map
 
     }, {
-        key: "init",
+        key: 'init',
         value: function init(map) {
             // TODO: Check if map is initilized already, if so do it again but overwrite the old.
             var mapAnimData = this.getAnimatedTiles(map);
@@ -193,7 +184,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
             )*/
         }
     }, {
-        key: "setRate",
+        key: 'setRate',
         value: function setRate(rate) {
             var gid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
             var map = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -224,7 +215,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
             // TODO: if passing an object -> check properties matching object and set rate
         }
     }, {
-        key: "resetRates",
+        key: 'resetRates',
         value: function resetRates() {
             var mapIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
@@ -247,7 +238,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
         //  Start (or resume) animations
 
     }, {
-        key: "resume",
+        key: 'resume',
         value: function resume() {
             var _this2 = this;
 
@@ -268,7 +259,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
         // Stop (or pause) animations
 
     }, {
-        key: "pause",
+        key: 'pause',
         value: function pause() {
             var layerIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
             var mapIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -281,7 +272,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
             }
         }
     }, {
-        key: "postUpdate",
+        key: 'postUpdate',
         value: function postUpdate(time, delta) {
             var _this3 = this;
 
@@ -329,7 +320,7 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
             }); // Map loop
         }
     }, {
-        key: "updateLayer",
+        key: 'updateLayer',
         value: function updateLayer(animatedTile, layer) {
             var oldTileId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1;
 
@@ -359,19 +350,19 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
         //  Called when a Scene shuts down, it may then come back again later (which will invoke the 'start' event) but should be considered dormant.
 
     }, {
-        key: "shutdown",
+        key: 'shutdown',
         value: function shutdown() {}
 
         //  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.
 
     }, {
-        key: "destroy",
+        key: 'destroy',
         value: function destroy() {
             this.shutdown();
             this.scene = undefined;
         }
     }, {
-        key: "getAnimatedTiles",
+        key: 'getAnimatedTiles',
         value: function getAnimatedTiles(map) {
             var _this4 = this;
 
@@ -441,13 +432,13 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
             return animatedTiles;
         }
     }, {
-        key: "putTileAt",
+        key: 'putTileAt',
         value: function putTileAt(layer, tile, x, y) {
             // Replaces putTileAt of the native API, but updates the list of animatedTiles in the process.
             // No need to call updateAnimatedTiles as required for other modificatons of the tile-map
         }
     }, {
-        key: "updateAnimatedTiles",
+        key: 'updateAnimatedTiles',
         value: function updateAnimatedTiles() {
             // future args: x=null, y=null, w=null, h=null, container=null 
             var x = null,

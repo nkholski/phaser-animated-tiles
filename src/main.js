@@ -8,7 +8,7 @@
 // This plugin is based on Photonstorms Phaser 3 plugin template with added support for ES6.
 // 
 
-class AnimatedTiles {
+class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
     /*
 
     TODO: 
@@ -16,11 +16,8 @@ class AnimatedTiles {
     2. Helper functions: Get mapIndex by passing a map (and maybe support it as argument to methods), Get layerIndex, get tile index from properties.
     
     */
-    constructor(scene) {
-        //  The Scene that owns this plugin
-        this.scene = scene;
-
-        this.systems = scene.sys;
+    constructor(scene, pluginManager) {
+        super(scene, pluginManager);
 
         // TileMap the plugin belong to. 
         // TODO: Array or object for multiple tilemaps support

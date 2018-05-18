@@ -18,13 +18,15 @@ function preload ()
     this.load.tilemapTiledJSON('map2', './map2.json');
     this.load.image('tiles', './tiles.png');
     this.load.image('super-mario-16bit', './super-mario-16bit.png');
-    this.load.plugin('AnimatedTiles', '../dist/AnimatedTiles.js');
+    this.load.scenePlugin('AnimatedTiles', '../dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
+    console.log("LOAD OK");
 }
 
 function create ()
 {
     // Install plugin
-    this.sys.install('AnimatedTiles');
+    
+    console.log("INSTALL OK");
     // Add first map
     map = this.make.tilemap({ key: 'map' });
     // Add two tilesets
@@ -35,15 +37,15 @@ function create ()
     layer2 = map.createDynamicLayer('aboveGround', tileset, 0, 0);
     layer3 = map.createDynamicLayer('another', tileset2, 0, 0);
     // Init animations on map
-    this.sys.animatedTiles.init(map);
+    this.animatedTiles.init(map);
 
     // Add a second map, it's layer and init naimations
     map2 = this.make.tilemap({ key: 'map2' });
     map2layer = map2.createDynamicLayer('ground', tileset, 160, 0);
-    this.sys.animatedTiles.init(map2);
+    this.animatedTiles.init(map2);
 
     // start dat.gui
-    window.startGui(this.sys.animatedTiles);
+    window.startGui(this.animatedTiles);
 
     // countdown 5 sek until change
     countdown = 5000;
@@ -60,7 +62,7 @@ function update (time, delta)
         // ATM it will go through all tilemaps and layers,
         // but I'll add support for limiting the task to
         // maps, layers and areas within that. 
-        this.sys.animatedTiles.updateAnimatedTiles();
+        this.animatedTiles.updateAnimatedTiles();
         // Ok. don't hammer tiles on each update-loop. the change is done.
         changed = true;
     }

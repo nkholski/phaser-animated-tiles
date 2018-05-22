@@ -2,12 +2,12 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("AnimatedTiles", [], factory);
+		define("GridPhysics", [], factory);
 	else if(typeof exports === 'object')
-		exports["AnimatedTiles"] = factory();
+		exports["GridPhysics"] = factory();
 	else
-		root["AnimatedTiles"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
+		root["GridPhysics"] = factory();
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -54,6 +54,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -68,6 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 0);
@@ -166,7 +172,6 @@ var AnimatedTiles = function (_Phaser$Plugins$Scene) {
                 rate: 1,
                 activeLayer: []
             };
-            var i = 0;
             map.layers.forEach(function () {
                 return animatedTiles.activeLayer.push(true);
             });

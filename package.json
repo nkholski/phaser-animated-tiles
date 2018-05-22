@@ -4,7 +4,9 @@
   "description": "Phaser 3 Animated Tiles Plugin",
   "main": "src/main.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --config webpack.build.config.js",
+    "demo": "webpack --config webpack.demo.config.js",
+    "dev": "webpack --config webpack.demo.config.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +24,13 @@
     "babel-loader": "^7.1.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
+    "browser-sync": "^2.24.4",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "copy-webpack-plugin": "^4.5.1",
     "dat.gui": "^0.7.0",
+    "html-webpack-plugin": "^3.2.0",
     "phaser": "3.8.0",
-    "webpack": "^3.10.0"
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3"
   }
 }

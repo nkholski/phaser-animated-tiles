@@ -21,50 +21,23 @@ I have a few stuff I would like to add, of which some might be [YAGNI](https://e
 2. Define animations programmatically.
 3. And if 2 is done: Allow animated rotation (probably 45 degree steps only), flipping and alpha. Tint? Stuff that Phaser supports.
 4. Method to reset everything to their first frame.
-5. The webpack configuration is the first working hack/update from the Plugin template and could probably improve a lot, like a serve function to run the example.
 
-## Example
-Install http-server
-```
-npm i http-server
-```
-Start http-server in the repository root and go to localhost:8080/example in your browser. Port number might be different. You might want to install http-server globally using "-g". Sorry for this. I lack the skills to serve the example by config for npm.
+## Install repository
+Clone the repository from git and run `npm i` and you're set to go.
 
+## Demo / Dev
+The plugin is bundled with a demo which is also used for testing during development.
+`npm run demo` or `npm run dev`
+
+## Build plugin
+Build the plugin including minified version:
+`npm run build`
 
 ## How to use the plugin
 
-### 1. Load the plugin and add it to a scene
+### 1. Load the plugin
 
-You can load plugins externally, or include them in your bundle.
-
-To load an external plugin:
-
-```
-function preload ()
-{
-    this.load.plugin('AnimatedTiles', 'path/to/AnimatedTiles.js');
-}
-```
-
-Then to install it into a Scene:
-
-```
-    this.sys.install('AnimatedTiles');
-```
-
-If you load the plugins in a Preloader scene then you can add them to any other Scenes by specifying them in the plugins array:
-
-```
-var config = {
-    scene: {
-        create: create,
-        plugins: [ 'AnimatedTiles' ],
-        map: {
-            'base': 'base'
-        }
-    }
-};
-```
+Please check out these Phaser 3 demos http://labs.phaser.io/index.html?dir=plugins/&q= for various methods to load the plugin as a **scene plugin**.
 
 ### 2. Use the plugin API
 

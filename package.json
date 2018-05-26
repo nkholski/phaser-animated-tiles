@@ -1,6 +1,6 @@
 {
   "name": "phaser-animated-tiles",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Phaser 3 Animated Tiles Plugin",
   "main": "src/main.js",
   "scripts": {

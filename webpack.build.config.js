@@ -9,14 +9,14 @@ module.exports = {
     watch: false,
     context: `${__dirname}/src/plugin/`,
     entry: {
-        animatedTiles: './main.js',
-        'animatedTiles.min': './main.js'
+        AnimatedTiles: './main.js',
+        'AnimatedTiles.min': './main.js'
     },
 
     /*output: {
         path: `${__dirname}/dist/`,
         filename: '[name].js',
-        library: 'animatedTiles',
+        library: 'AnimatedTiles',
         libraryTarget: 'umd',
         umdNamedDefine: true
     },*/

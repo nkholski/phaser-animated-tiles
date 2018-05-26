@@ -7,7 +7,7 @@ export default class Demo extends Phaser.Scene {
         this.load.tilemapTiledJSON('map2', './assets/map2.json');
         this.load.image('tiles', './assets/tiles.png');
         this.load.image('super-mario-16bit', './assets/super-mario-16bit.png');
-        this.load.scenePlugin('animatedTiles', 'AnimatedTiles.js'); //, 'animatedTiles', 'animatedTiles');
+        this.load.scenePlugin('AnimatedTiles', 'AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
     }
 
     create() {

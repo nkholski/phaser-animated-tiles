@@ -13,7 +13,7 @@ var definePlugin = new webpack.DefinePlugin({
 module.exports = {
     mode: 'development',
     entry: {
-        animatedTiles: './src/plugin/main.js',
+        AnimatedTiles: './src/plugin/main.js',
         demo: [
             'babel-polyfill',
             path.resolve(__dirname, 'src/demo/main.js')
@@ -35,7 +35,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/demo/index.html',
-            chunks: ['vendor', 'animatedTiles', 'demo'],
+            chunks: ['vendor', 'AnimatedTiles', 'demo'],
             chunksSortMode: 'manual',
             minify: {
                 removeAttributeQuotes: false,

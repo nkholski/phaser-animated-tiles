@@ -9,16 +9,24 @@ module.exports = {
     watch: false,
     context: `${__dirname}/src/plugin/`,
     entry: {
-        AnimatedTiles: './main.js',
-        'AnimatedTiles.min': './main.js'
+        animatedTiles: './main.js',
+        'animatedTiles.min': './main.js'
     },
 
-    output: {
+    /*output: {
         path: `${__dirname}/dist/`,
         filename: '[name].js',
-        library: 'GridPhysics',
+        library: 'animatedTiles',
         libraryTarget: 'umd',
         umdNamedDefine: true
+    },*/
+    output: {
+        pathinfo: true,
+        path: path.resolve(__dirname, 'dev'),
+        path: `${__dirname}/dist/`,
+        library: '[name]',
+        libraryTarget: 'umd',
+        filename: '[name].js'
     },
 
     plugins: [

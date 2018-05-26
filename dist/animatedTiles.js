@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("GridPhysics", [], factory);
+		define([], factory);
 	else if(typeof exports === 'object')
-		exports["GridPhysics"] = factory();
+		exports["animatedTiles"] = factory();
 	else
-		root["GridPhysics"] = factory();
+		root["animatedTiles"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -81,6 +81,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
+/*!*****************!*\
+  !*** ./main.js ***!
+  \*****************/
+/*! no static exports found */
+/*! all exports used */
+/*! ModuleConcatenation bailout: Module is not an ECMAScript module */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -280,6 +280,8 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
                                 });
                             // time until jumping to next frame
                             animatedTileData.next = animatedTileData.frames[0].duration;
+                            // set correct currentFrame if animation starts with different tile than the one with animation flag
+                            animatedTileData.currentFrame = animatedTileData.frames.findIndex(f => f.tileid === index + tileset.firstgid);
                             // Go through all layers for tiles
                             map.layers.forEach(
                                 (layer) => {

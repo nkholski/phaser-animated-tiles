@@ -2,7 +2,7 @@
   "name": "phaser-animated-tiles",
   "version": "2.0.2",
   "description": "Phaser 3 Animated Tiles Plugin",
-  "main": "src/main.js",
+  "main": "src/plugin/main.js",
   "scripts": {
     "build": "webpack --config webpack.build.config.js",
     "demo": "webpack --config webpack.demo.config.js",
@@ -32,5 +32,8 @@
     "phaser": "3.8.0",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3"
+  },
+  "peerDependencies": {
+    "phaser": "^3.x"
   }
 }

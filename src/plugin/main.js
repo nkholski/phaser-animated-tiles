@@ -239,7 +239,10 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
     }
 
     //  Called when a Scene shuts down, it may then come back again later (which will invoke the 'start' event) but should be considered dormant.
-    shutdown() {}
+    shutdown() {
+        // dercetech@github: this fixes a memory leak; a ref to all tiles in a scene would be retained in spite of switching scenes.
+        this.animatedTiles.length = 0;
+    }
 
 
     //  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.

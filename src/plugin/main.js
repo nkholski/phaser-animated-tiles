@@ -288,13 +288,17 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
                             // Go through all layers for tiles
                             map.layers.forEach(
                                 (layer) => {
-                                    if (layer.tilemapLayer.type === "StaticTilemapLayer") {
-                                        // We just push an empty array if the layer is static (impossible to animate). 
-                                        // If we just skip the layer, the layer order will be messed up
-                                        // when updating animated tiles and things will look awful.
-                                        animatedTileData.tiles.push([]);
-                                        return;
-                                    }
+                                    //In newer version of phaser there is only one type of layer, so checking for static is breaking the plugin
+                                    if(layer.tilemapLayer && layer.tilemapLayer.type) {
+                                        if (layer.tilemapLayer.type === "StaticTilemapLayer") {
+                                            // We just push an empty array if the layer is static (impossible to animate). 
+                                            // If we just skip the layer, the layer order will be messed up
+                                            // when updating animated tiles and things will look awful.
+                                            animatedTileData.tiles.push([]);
+                                            return;
+                                        }
+                                    }    
+                                    
                                     // tiles array for current layer
                                     let tiles = [];
                                     // loop through all rows with tiles...
@@ -370,7 +374,8 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
                         tileAnimData.tiles.forEach(
                             (tiles, layerIndex) => {
                                 let layer = mapAnimData.map.layers[layerIndex];
-                                if (layer.type === "StaticTilemapLayer") {
+                                //In newer version of phaser there is only one type of layer, so checking for static is breaking the plugin
+                                if (layer.type && layer.type === "StaticTilemapLayer") {
                                     return;
                                 }
                                 for (let x = chkX; x < (chkX + chkW); x++) {

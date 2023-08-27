@@ -2,7 +2,6 @@
  * @author       Niklas Berg <nkholski@niklasberg.se>
  * @copyright    2018 Niklas Berg
  * @license      {@link https://github.com/nkholski/phaser3-animated-tiles/blob/master/LICENSE|MIT License}
- * @editor       Jakub Woś - added removal of animated tiles to support map chunking
  */
 
 //
@@ -11,13 +10,10 @@
 
 class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
     /*
-
     TODO: 
     1. Fix property names which is a mess after adding support for multiple maps, tilesets and layers.
     2. Helper functions: Get mapIndex by passing a map (and maybe support it as argument to methods), Get layerIndex, get tile index from properties.
-    
     */
-    
 
     constructor(scene, pluginManager) {
         super(scene, pluginManager);
@@ -295,6 +291,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
         this.animatedTiles.length = 0;
     }
 
+    /** Removes animated tiles that are on the map */
     removeMap(map) {
         const index = this.animatedTiles.findIndex(
             (data) => data.map === map
